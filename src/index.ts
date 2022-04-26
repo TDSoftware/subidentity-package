@@ -1,5 +1,5 @@
-import {add} from "./add";
+import {getIdentityResponse, IdentitiesResponse, BasicIdentityInfo} from "./identities";
 
 export {
-    add
+    getIdentityResponse, IdentitiesResponse, BasicIdentityInfo
 };
