@@ -1,46 +1,23 @@
 import { ApiPromise, WsProvider } from "@polkadot/api";
 import "@polkadot/api-augment";
+import { BasicIdentityInfo } from "./types/BasicIdentityInfo";
+import { Identities } from "./types/Identities";
 
-export type IdentitiesResponse = {
-    chainName: string;
-    basicIdentityInfoList: Promise<BasicIdentityInfo[]>;
-}
-
-export class BasicIdentityInfo {
-    display!: string;
-    address!: string;
-    riot!: string;
-    twitter!: string;
-    web!: string;
-    legal!: string;
-    email!: string;
-
-    constructor(display:string, address: string, riot: string, twitter: string, web: string, legal: string, email: string) {
-        this.display = display;
-        this.address = address;
-        this.riot = riot;
-        this.twitter = twitter;
-        this.web = web;
-        this.legal = legal;
-        this.email = email;
-    }
-}
-
-export const getIdentityResponse = async (wsAddress: string): Promise<IdentitiesResponse> => {
-    const api = connectToWsProvider(wsAddress);
+export const getIdentities = async (wsAddress: string): Promise<Identities> => {
+    const api = _connectToWsProvider(wsAddress);
     return {
         chainName: ((await api).rpc.system.chain()).toString(),
-        basicIdentityInfoList: getBasicInfoOfIdentities(await api)
+        basicIdentityInfoList: _getBasicInfoOfIdentities(await api)
     };
 };
 
-async function connectToWsProvider(wsAddress: string): Promise<ApiPromise> {
+async function _connectToWsProvider(wsAddress: string): Promise<ApiPromise> {
     //TODO: create global variable for wsProvider
     const wsProvider = new WsProvider(wsAddress);
     return await ApiPromise.create({provider: wsProvider});
 }
 
-async function getBasicInfoOfIdentities(api: ApiPromise): Promise<BasicIdentityInfo[]> {
+async function _getBasicInfoOfIdentities(api: ApiPromise): Promise<BasicIdentityInfo[]> {
     const list = await api.query.identity.identityOf.entries();
     const identities = list.map((identity: any) => {
         const {
@@ -56,7 +33,7 @@ async function getBasicInfoOfIdentities(api: ApiPromise): Promise<BasicIdentityI
         if (Array.isArray(addressArray)) {
             address = `${addressArray[0]}`;
         }
-        return new BasicIdentityInfo(display,  address, riot, twitter, web, legal, email); 
+        return { display,  address, riot, twitter, web, legal, email };
     });
     return identities;
 }

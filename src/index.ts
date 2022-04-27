@@ -1,5 +1,7 @@
-import {getIdentityResponse, IdentitiesResponse, BasicIdentityInfo} from "./identities";
+import { getIdentities } from "./identities";
+import { BasicIdentityInfo } from "./types/BasicIdentityInfo";
+import { Identities } from "./types/Identities";
 
 export {
-    getIdentityResponse, IdentitiesResponse, BasicIdentityInfo
+    getIdentities, BasicIdentityInfo, Identities
 };
