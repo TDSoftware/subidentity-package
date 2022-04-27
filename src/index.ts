@@ -1,5 +1,7 @@
-import {add} from "./add";
+import { getIdentities } from "./identities";
+import { BasicIdentityInfo } from "./types/BasicIdentityInfo";
+import { Identity } from "./types/Identity";
 
 export {
-    add
+    getIdentities, BasicIdentityInfo, Identity
 };
