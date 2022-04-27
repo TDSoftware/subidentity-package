@@ -3,6 +3,8 @@ import "@polkadot/api-augment";
 import { BasicIdentityInfo } from "./types/BasicIdentityInfo";
 import { Identity } from "./types/Identity";
 
+const apiPromises: { [wsAddress: string]: ApiPromise } = {};
+
 export const getIdentities = async (wsAddress: string): Promise<Identity[]> => {
     const api = _connectToWsProvider(wsAddress);
     const chain = (await (await api).rpc.system.chain());
@@ -10,7 +12,9 @@ export const getIdentities = async (wsAddress: string): Promise<Identity[]> => {
 };
 
 async function _connectToWsProvider(wsAddress: string): Promise<ApiPromise> {
-    //TODO: create global variable for wsProvider
+    if(apiPromises[wsAddress]) {
+        return apiPromises[wsAddress];
+    }
     const wsProvider = new WsProvider(wsAddress);
     return await ApiPromise.create({provider: wsProvider});
 }
