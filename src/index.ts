@@ -1,7 +1,7 @@
 import { getIdentities } from "./identities";
 import { BasicIdentityInfo } from "./types/BasicIdentityInfo";
-import { Identities } from "./types/Identities";
+import { Identity } from "./types/Identity";
 
 export {
-    getIdentities, BasicIdentityInfo, Identities
+    getIdentities, BasicIdentityInfo, Identity
 };
