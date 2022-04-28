@@ -9,6 +9,7 @@ export async function _paginate(allItems: any[], page: number, limit: number): P
     const startIndex = (page -1) * limit;
     const endIndex = page * limit;
     const items: any[] = allItems.slice(startIndex, endIndex);
+    const totalPageCount = Math.ceil(allItems.length/limit);
     let previous, next;
     if(startIndex > 0) {
         previous = page - 1;
@@ -16,5 +17,5 @@ export async function _paginate(allItems: any[], page: number, limit: number): P
     if(endIndex < allItems.length) {
         next = page + 1;
     }
-    return {previous, next, items};
+    return {totalPageCount, previous, next, items};
 }
