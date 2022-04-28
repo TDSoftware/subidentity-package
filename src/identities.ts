@@ -3,7 +3,9 @@ import "@polkadot/api-augment";
 import { BasicIdentityInfo } from "./types/BasicIdentityInfo";
 import { Identity } from "./types/Identity";
 
-const apiPromises: { [wsAddress: string]: ApiPromise } = {};
+export const apiPromises: { [wsAddress: string]: ApiPromise } = {};
+
+// TODO: add some esdocs descriptions for the public function
 
 export const getIdentities = async (wsAddress: string): Promise<Identity[]> => {
     const api = _connectToWsProvider(wsAddress);
@@ -33,7 +35,7 @@ async function _getBasicInfoOfIdentities(api: ApiPromise, chainName: string): Pr
         
         const addressArray = identity[0].toHuman();
         let address = "";
-        if (Array.isArray(addressArray)) {
+        if (Array.isArray(addressArray) && addressArray.length > 0) {
             address = `${addressArray[0]}`;
         }
         
