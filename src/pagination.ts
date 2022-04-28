@@ -5,7 +5,7 @@ import { Page } from "./types/Page";
   * @param page requested page number
   * @param limit number of items per page
   */
-export async function _paginate(allItems: any[], page: number, limit: number): Promise<Page> {   
+export async function _paginate(allItems: any[], page: number, limit: number): Promise<Page<any>> {   
     const startIndex = (page -1) * limit;
     const endIndex = page * limit;
     const items: any[] = allItems.slice(startIndex, endIndex);

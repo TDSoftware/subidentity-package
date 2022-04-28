@@ -1,5 +1,5 @@
-export interface Page {
+export interface Page<T> {
     previous: any;
     next: any;
-    items: any[];
+    items: T[];
 }

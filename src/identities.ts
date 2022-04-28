@@ -1,8 +1,9 @@
 import { ApiPromise, WsProvider } from "@polkadot/api";
 import "@polkadot/api-augment";
 import { BasicIdentityInfo } from "./types/BasicIdentityInfo";
-import { IdentityPage } from "./types/IdentityPage";
 import {_paginate } from "./pagination";
+import { Page } from "./types/Page";
+import { Identity } from "./types/Identity";
 
 export const apiPromises: { [wsAddress: string]: ApiPromise } = {};
 
@@ -13,7 +14,7 @@ export const apiPromises: { [wsAddress: string]: ApiPromise } = {};
  * @param limit number of identity items per each page
  * @returns requested page with identitites
  */
-export const getIdentities = async (wsAddress: string, page: number, limit: number): Promise<IdentityPage> => {
+export const getIdentities = async (wsAddress: string, page: number, limit: number): Promise<Page<Identity>> => {
     const api = _connectToWsProvider(wsAddress);
     const chain = (await (await api).rpc.system.chain());
     return _getBasicInfoOfIdentities((await api), chain.toString(), page, limit);
@@ -27,7 +28,7 @@ async function _connectToWsProvider(wsAddress: string): Promise<ApiPromise> {
     return await ApiPromise.create({provider: wsProvider});
 }
 
-async function _getBasicInfoOfIdentities(api: ApiPromise, chainName: string, page: number, limit: number): Promise<IdentityPage> {
+async function _getBasicInfoOfIdentities(api: ApiPromise, chainName: string, page: number, limit: number): Promise<Page<Identity>> {
     const list = await api.query.identity.identityOf.entries();
     const identities = list.map((identity: any) => {
         const {
