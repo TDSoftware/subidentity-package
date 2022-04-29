@@ -1,16 +1,23 @@
 import { ApiPromise, WsProvider } from "@polkadot/api";
 import "@polkadot/api-augment";
 import { BasicIdentityInfo } from "./types/BasicIdentityInfo";
+import {_paginate } from "./pagination";
+import { Page } from "./types/Page";
 import { Identity } from "./types/Identity";
 
 export const apiPromises: { [wsAddress: string]: ApiPromise } = {};
 
-// TODO: add some esdocs descriptions for the public function
-
-export const getIdentities = async (wsAddress: string): Promise<Identity[]> => {
+/**
+ * fetch identitites from a selected substrate based chain 
+ * @param wsAddress Network end point URL
+ * @param page requested page number
+ * @param limit number of identity items per each page
+ * @returns requested page with identitites
+ */
+export const getIdentities = async (wsAddress: string, page: number, limit: number): Promise<Page<Identity>> => {
     const api = _connectToWsProvider(wsAddress);
     const chain = (await (await api).rpc.system.chain());
-    return _getBasicInfoOfIdentities((await api), chain.toString());
+    return _getBasicInfoOfIdentities((await api), chain.toString(), page, limit);
 };
 
 async function _connectToWsProvider(wsAddress: string): Promise<ApiPromise> {
@@ -21,7 +28,7 @@ async function _connectToWsProvider(wsAddress: string): Promise<ApiPromise> {
     return await ApiPromise.create({provider: wsProvider});
 }
 
-async function _getBasicInfoOfIdentities(api: ApiPromise, chainName: string): Promise<Identity[]> {
+async function _getBasicInfoOfIdentities(api: ApiPromise, chainName: string, page: number, limit: number): Promise<Page<Identity>> {
     const list = await api.query.identity.identityOf.entries();
     const identities = list.map((identity: any) => {
         const {
@@ -43,5 +50,5 @@ async function _getBasicInfoOfIdentities(api: ApiPromise, chainName: string): Pr
         const chain = chainName;
         return {chain, basicInfo};
     });
-    return identities;
+    return _paginate(identities, page, limit);
 }
