@@ -8,6 +8,17 @@ import { Identity } from "./types/Identity";
 export const apiPromises: { [wsAddress: string]: ApiPromise } = {};
 
 /**
+ * check if chain of provided endpoint implements the identity pallet
+ * @param wsAddress Network end point URL
+ * @returns true if identity pallet is implemented
+ */
+export const implementsIdentityPallet = async (wsAddress: string): Promise<boolean> => {
+    const api = await _connectToWsProvider(wsAddress);
+    return api.query.identity != undefined;
+};
+
+
+/**
  * fetch identitites from a selected substrate based chain 
  * @param wsAddress Network end point URL
  * @param page requested page number
@@ -25,7 +36,9 @@ async function _connectToWsProvider(wsAddress: string): Promise<ApiPromise> {
         return apiPromises[wsAddress];
     }
     const wsProvider = new WsProvider(wsAddress);
-    return await ApiPromise.create({provider: wsProvider});
+    const apiPromise = await ApiPromise.create({provider: wsProvider});
+    apiPromises[wsAddress] = apiPromise;
+    return apiPromise;
 }
 
 async function _getBasicInfoOfIdentities(api: ApiPromise, chainName: string, page: number, limit: number): Promise<Page<Identity>> {
