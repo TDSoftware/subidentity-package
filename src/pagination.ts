@@ -19,3 +19,10 @@ export async function _paginate(allItems: any[], page: number, limit: number): P
     }
     return {totalPageCount, previous, next, items};
 }
+
+export function _validatePaginationInput(page: number, limit: number): boolean {
+    let isValid = false;
+    if(page > 0 && limit > 0)
+        isValid = true;
+    return isValid;
+}

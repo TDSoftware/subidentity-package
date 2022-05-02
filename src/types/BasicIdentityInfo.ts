@@ -1,9 +1,9 @@
 export interface BasicIdentityInfo {
-    display:string;
-    address: string;
-    riot: string;
-    twitter: string;
-    web: string;
-    legal: string;
-    email: string;
+    display: string | undefined;
+    address: string | undefined;
+    riot: string | undefined;
+    twitter: string | undefined;
+    web: string | undefined;
+    legal: string | undefined;
+    email: string | undefined;
 }

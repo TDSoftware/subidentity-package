@@ -38,5 +38,21 @@ export const ApiPromiseMock = {
                 }
             }
         }
+    },
+    derive: {
+        accounts: {
+            identity(): any {
+                return {
+                    basicInfo: {
+                        display: "fake-name",
+                        address: "fake-address",
+                        riot: "fake-riot",
+                        twitter: "fake-twitter",
+                        web: "fake-web",
+                        legal: "fake-legal", 
+                        email: "fake-email"                    }
+                };
+            }
+        }
     }
 } as ApiPromise;

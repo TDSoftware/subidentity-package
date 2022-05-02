@@ -1,4 +1,4 @@
-import { apiPromises, getIdentities } from "./identities";
+import { apiPromises, getIdentities, searchIdentities } from "./identities";
 import { ApiPromiseMock } from "./mockData";
 
 const testWsAddress = "//test-address.yeah";
@@ -28,5 +28,23 @@ describe("identities.ts", () => {
         const entries = await getIdentities(testWsAddress, 1, 5);
         expect(entries.next).toBe(undefined);
         expect(entries.previous).toBe(undefined);
+    });
+
+    it("should throw TypeError since pagination details are invalid", async () => {
+        try {
+            await getIdentities(testWsAddress, -1, -5);
+        } catch (error) {
+            expect(error).toBeInstanceOf(TypeError);
+            expect(error).toHaveProperty("message", "Please provide valid page number or limit");
+        }
+    });
+
+    it("should search the queried identity and return the result in response", async () => {
+        const entries = await searchIdentities(testWsAddress, "fake-name", 1, 5);
+        expect(Array.isArray(entries.items)).toBe(true);
+        expect(entries.items.length).toBe(1);
+        expect(entries.items[0].chain).toBe("Fake-ChainName");
+        expect(entries.items[0].basicInfo.address).toBe("fake-address");
+        console.log(entries.items[0]);
     });
 });
