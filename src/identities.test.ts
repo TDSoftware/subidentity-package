@@ -45,6 +45,5 @@ describe("identities.ts", () => {
         expect(entries.items.length).toBe(1);
         expect(entries.items[0].chain).toBe("Fake-ChainName");
         expect(entries.items[0].basicInfo.address).toBe("fake-address");
-        console.log(entries.items[0]);
     });
 });
