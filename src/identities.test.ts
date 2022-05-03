@@ -51,7 +51,6 @@ describe("identities.ts", () => {
         expect(entries.items[0].basicInfo.legal).toBe("fake-legal");
         expect(entries.items[0].basicInfo.web).toBe("fake-web");
         expect(entries.items[0].basicInfo.email).toBe("fake-email");
-        console.log(entries.items[0]);
     });
 
     it("should search the queried identity and return empty result as a match is not found", async () => {
