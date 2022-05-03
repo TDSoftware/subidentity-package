@@ -40,10 +40,23 @@ describe("identities.ts", () => {
     });
 
     it("should search the queried identity and return the result in response", async () => {
-        const entries = await searchIdentities(testWsAddress, "fake-name", 1, 5);
+        const entries = await searchIdentities(testWsAddress, "ake-nam", 1, 5);
         expect(Array.isArray(entries.items)).toBe(true);
         expect(entries.items.length).toBe(1);
         expect(entries.items[0].chain).toBe("Fake-ChainName");
         expect(entries.items[0].basicInfo.address).toBe("fake-address");
+        expect(entries.items[0].basicInfo.display).toBe("fake-name");
+        expect(entries.items[0].basicInfo.riot).toBe("fake-riot");
+        expect(entries.items[0].basicInfo.twitter).toBe("fake-twitter");
+        expect(entries.items[0].basicInfo.legal).toBe("fake-legal");
+        expect(entries.items[0].basicInfo.web).toBe("fake-web");
+        expect(entries.items[0].basicInfo.email).toBe("fake-email");
+        console.log(entries.items[0]);
+    });
+
+    it("should search the queried identity and return empty result as a match is not found", async () => {
+        const entries = await searchIdentities(testWsAddress, "faky-nam", 1, 5);
+        expect(Array.isArray(entries.items)).toBe(true);
+        expect(entries.items.length).toBe(0);
     });
 });

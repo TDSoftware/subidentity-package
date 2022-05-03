@@ -87,7 +87,7 @@ export const searchIdentities = async (wsAddress: string, query: string, page: n
     if(!query) {
         return getIdentities(wsAddress, page, limit);
     }
-    let identity, accountId;
+    let identity;
     const searchResults: Identity[] = [];
     const api = _connectToWsProvider(wsAddress);
     const chainName = ((await (await api).rpc.system.chain())).toString();
@@ -96,7 +96,7 @@ export const searchIdentities = async (wsAddress: string, query: string, page: n
         //getting the address from the input if it is an index
         const [fromIndex, fromFields] = await Promise.all([
             _getAddressFromIndex(await api, query),
-            _getAddressFromFields(await api, query)
+            _getIdentityFromFields(await api, query)
         ]);
 
         if (Array.isArray(fromFields)) {
@@ -108,20 +108,10 @@ export const searchIdentities = async (wsAddress: string, query: string, page: n
             });
             return _paginate(searchResults, page, limit);
         }
-        accountId = fromIndex || fromFields;
-        try {
-            if (accountId) {
-                identity = await (await api).derive.accounts.identity(accountId);
-            } else {
-                identity = await (await api).derive.accounts.identity(query);
-            }
-        } catch (ex) {
-            console.log(ex);
-        }
+        identity = fromIndex || fromFields;
     }
     if (identity) {
-        const { display, email, legal, riot, twitter, web } = identity;
-        const address = accountId;
+        const {display, address, riot, twitter, web, legal, email} = identity;
         const basicInfo: BasicIdentityInfo = {display, address, riot, twitter, web, legal, email};
         const chain = chainName;
         const ident : Identity = { chain, basicInfo };
@@ -145,7 +135,7 @@ async function _getAddressFromIndex(
     }
 }
 
-async function _getAddressFromFields(
+async function _getIdentityFromFields(
     api: ApiPromise,
     field: string
 ): Promise<any> {
@@ -157,6 +147,7 @@ async function _getAddressFromFields(
             .filter((user: any) => {
                 const {
                     display,
+                    address,
                     riot,
                     twitter,
                     web,
@@ -175,6 +166,8 @@ async function _getAddressFromFields(
                     case query.test(twitter):
                         return true;
                     case query.test(web):
+                        return true;
+                    case query.test(address):
                         return true;
                     default:
                         return false;
@@ -208,7 +201,7 @@ async function _getAddressFromFields(
             });
     }
     if (identities.length === 1) {
-        return identities[0].address;
+        return identities[0];
     } else if (identities.length > 1) {
         return identities;
     }
