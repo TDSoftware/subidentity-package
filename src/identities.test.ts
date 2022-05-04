@@ -1,5 +1,5 @@
-
 import { apiPromises, getIdentities, implementsIdentityPallet, searchIdentities } from "./identities";
+
 import { ApiPromiseMock, ApiPromiseMockWOIdentityPallet } from "./mockData";
 
 const testWsAddress = "//test-address.yeah";
@@ -71,5 +71,4 @@ describe("identities.ts", () => {
         const isImplementingIdentityPallet = await implementsIdentityPallet(testWSAddressWOIdentityPallet);
         expect(isImplementingIdentityPallet).toBeFalsy();
     });
-
 });
