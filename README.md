@@ -34,6 +34,19 @@ let limit = 10;
 let page: Page<Identity> = await getIdentities(wsProvider, pageNumber, limit);
 ```
 
+### searchIdentities
+Returns a Page of identities of the chain of the provided wsProvider fitting the search term.
+
+```
+import { searchIdentities } from "@npmjs_tdsoftware/subidentity"
+
+let wsProvider: string = "your-ws-provider"
+let pageNumber = 1;
+let limit = 10;
+let query = "your-query-string";
+let page: Page<Identity> = await searchIdentities(wsProvider, query, pageNumber, limit);
+```
+
 ### implementsIdentityPallet
 Returns true, if chain of provided wsProvider implements identity pallet.
 
