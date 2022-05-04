@@ -1,8 +1,9 @@
-import { getIdentities } from "./identities";
+import { getIdentities, getIdentity } from "./identities";
 import { BasicIdentityInfo } from "./types/BasicIdentityInfo";
 import { Identity } from "./types/Identity";
 import { Page } from "./types/Page";
+import { Balance } from "./types/Balance";
 
 export {
-    getIdentities, BasicIdentityInfo, Identity, Page
+    getIdentities, getIdentity, BasicIdentityInfo, Identity, Page, Balance
 };

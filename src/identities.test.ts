@@ -1,4 +1,4 @@
-import { apiPromises, getIdentities } from "./identities";
+import { apiPromises, getIdentities, getIdentity } from "./identities";
 import { ApiPromiseMock } from "./mockData";
 
 const testWsAddress = "//test-address.yeah";
@@ -28,5 +28,12 @@ describe("identities.ts", () => {
         const entries = await getIdentities(testWsAddress, 1, 5);
         expect(entries.next).toBe(undefined);
         expect(entries.previous).toBe(undefined);
+    });
+
+    it("should fetch requested identity", async () => {
+        const entry = await getIdentity(testWsAddress, "fake-address");
+        expect(entry.chain).toBe("Fake-ChainName");
+        expect(entry.basicInfo.address).toBe("fake-address");
+        //TODO: improvise to test judgements and balance
     });
 });
