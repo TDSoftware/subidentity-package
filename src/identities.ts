@@ -137,22 +137,9 @@ async function _getIdentityFromIndex(
             const identity = await api.derive.accounts.identity(address);
             //check if Account has an identity
             if(!Object.prototype.hasOwnProperty.call(identity, "display")) return;
-            const {
-                display, 
-                email,
-                legal,
-                riot,
-                twitter,
-                web
-            } = identity;
             return {
-                display,
-                address,
-                riot,
-                twitter,
-                web,
-                legal,
-                email
+                ...identity,
+                address
             };
         }
     } catch (ex) {
