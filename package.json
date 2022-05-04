@@ -1,5 +1,5 @@
 {
-  "name": "subidentity-package",
+  "name": "subidentity",
   "version": "1.0.0",
   "description": "",
   "main": "./lib/index.js",
