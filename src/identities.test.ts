@@ -61,16 +61,14 @@ describe("identities.ts", () => {
         expect(Array.isArray(entries.items)).toBe(true);
         expect(entries.items.length).toBe(0);
     });
-    
+
     it("should return true for implementing identity pallet", async () => {
         const isImplementingIdentityPallet = await implementsIdentityPallet(testWsAddress);
-        console.log(isImplementingIdentityPallet);
         expect(isImplementingIdentityPallet).toBeTruthy();
     });
 
     it("should return false for implementing identity pallet", async () => {
         const isImplementingIdentityPallet = await implementsIdentityPallet(testWSAddressWOIdentityPallet);
-        console.log(isImplementingIdentityPallet);
         expect(isImplementingIdentityPallet).toBeFalsy();
     });
 
