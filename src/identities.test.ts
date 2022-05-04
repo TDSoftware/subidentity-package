@@ -1,10 +1,12 @@
-import { apiPromises, getIdentities } from "./identities";
-import { ApiPromiseMock } from "./mockData";
+import { apiPromises, getIdentities, implementsIdentityPallet } from "./identities";
+import { ApiPromiseMock, ApiPromiseMockWOIdentityPallet } from "./mockData";
 
 const testWsAddress = "//test-address.yeah";
+const testWSAddressWOIdentityPallet = "//test-address.yeah.WOIdentityPallet";
 
 // Mock the ApiPromise from polkadot
 apiPromises[testWsAddress] = ApiPromiseMock;
+apiPromises[testWSAddressWOIdentityPallet] = ApiPromiseMockWOIdentityPallet;
 
 describe("identities.ts", () => {
 
@@ -28,5 +30,17 @@ describe("identities.ts", () => {
         const entries = await getIdentities(testWsAddress, 1, 5);
         expect(entries.next).toBe(undefined);
         expect(entries.previous).toBe(undefined);
+    });
+
+    it("should return true for implementing identity pallet", async () => {
+        const isImplementingIdentityPallet = await implementsIdentityPallet(testWsAddress);
+        console.log(isImplementingIdentityPallet);
+        expect(isImplementingIdentityPallet).toBeTruthy();
+    });
+
+    it("should return false for implementing identity pallet", async () => {
+        const isImplementingIdentityPallet = await implementsIdentityPallet(testWSAddressWOIdentityPallet);
+        console.log(isImplementingIdentityPallet);
+        expect(isImplementingIdentityPallet).toBeFalsy();
     });
 });

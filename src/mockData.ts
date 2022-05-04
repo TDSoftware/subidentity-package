@@ -40,3 +40,14 @@ export const ApiPromiseMock = {
         }
     }
 } as ApiPromise;
+
+// This is a mock for the expected ApiPromise response for a chain that does not implement the identity pallet
+// Can be used in tests
+export const ApiPromiseMockWOIdentityPallet = {
+    rpc: {
+        system: {
+            chain: () => "Fake-ChainName" as unknown
+        }
+    },
+    query: {}
+} as ApiPromise;
