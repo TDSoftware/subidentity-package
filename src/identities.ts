@@ -14,7 +14,7 @@ export const apiPromises: { [wsAddress: string]: ApiPromise } = {};
  */
 export const implementsIdentityPallet = async (wsAddress: string): Promise<boolean> => {
     const api = await _connectToWsProvider(wsAddress);
-    return api.query.identity != undefined;
+    return typeof api.query.identity !== "undefined";
 };
 
 

@@ -2,7 +2,7 @@ import { apiPromises, getIdentities, implementsIdentityPallet } from "./identiti
 import { ApiPromiseMock, ApiPromiseMockWOIdentityPallet } from "./mockData";
 
 const testWsAddress = "//test-address.yeah";
-const testWSAddressWOIdentityPallet = "//test-address.yeah.WOIdentityPallet"
+const testWSAddressWOIdentityPallet = "//test-address.yeah.WOIdentityPallet";
 
 // Mock the ApiPromise from polkadot
 apiPromises[testWsAddress] = ApiPromiseMock;
