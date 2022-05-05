@@ -28,9 +28,9 @@ export const implementsIdentityPallet = async (wsAddress: string): Promise<boole
  * @returns requested page with identitites
  */
 export const getIdentities = async (wsAddress: string, page: number, limit: number): Promise<Page<Identity>> => {
-    const api = _connectToWsProvider(wsAddress);
-    const chain = (await (await api).rpc.system.chain());
-    return _getBasicInfoOfIdentities((await api), chain.toString(), page, limit);
+    const api = await _connectToWsProvider(wsAddress);
+    const chain = (await api.rpc.system.chain());
+    return _getBasicInfoOfIdentities(api, chain.toString(), page, limit);
 };
 
 async function _connectToWsProvider(wsAddress: string): Promise<ApiPromise> {
@@ -76,11 +76,11 @@ async function _getBasicInfoOfIdentities(api: ApiPromise, chainName: string, pag
  * @returns requested Identitity
  */
 export const getIdentity = async (wsAddress: string, address: string): Promise<Identity> => {
-    const api = _connectToWsProvider(wsAddress);
+    const api = await _connectToWsProvider(wsAddress);
     let identity: any;
     if (api) {
         try {
-            identity = await (await api).derive.accounts.identity(address);
+            identity = await api.derive.accounts.identity(address);
         } catch(ex) {
             throw TypeError("Unable to find an identity with the provided address.");
         }
@@ -95,8 +95,8 @@ export const getIdentity = async (wsAddress: string, address: string): Promise<I
     
     const { display, email, legal, riot, twitter, web } = identity;
     const basicInfo: BasicIdentityInfo = { display, address, riot, twitter, web, legal, email };
-    const balance = await _getAccountBalance(await api, address);
-    const chain = (await (await api).rpc.system.chain()).toString();
+    const balance = await _getAccountBalance(api, address);
+    const chain = (await api.rpc.system.chain()).toString();
     return {chain, basicInfo, judgements, balance};
 };
 
