@@ -1,6 +1,6 @@
 {
-  "name": "subidentity",
-  "version": "0.0.1",
+  "name": "@npmjs_tdsoftware/subidentity",
+  "version": "0.0.2",
   "description": "",
   "main": "./lib/index.js",
   "files": [
