@@ -76,6 +76,12 @@ describe("identities.ts", () => {
         const entry = await getIdentity(testWsAddress, "fake-address");
         expect(entry.chain).toBe("Fake-ChainName");
         expect(entry.basicInfo.address).toBe("fake-address");
+        expect(entry.basicInfo.display).toBe("fake-name");
+        expect(entry.basicInfo.riot).toBe("fake-riot");
+        expect(entry.basicInfo.twitter).toBe("fake-twitter");
+        expect(entry.basicInfo.legal).toBe("fake-legal");
+        expect(entry.basicInfo.web).toBe("fake-web");
+        expect(entry.basicInfo.email).toBe("fake-email");
         //TODO: improvise to test judgements and balance
     });
 });
