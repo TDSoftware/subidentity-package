@@ -237,10 +237,16 @@ export const getIdentity = async (wsAddress: string, address: string): Promise<I
         }
     }
 
+    //process judgements
     const judgements: string[] = [];
     if (identity && identity.judgements) {
-        identity.judgements.forEach((judgement: any) => {
-            judgements.push(judgement[1].toHuman());
+        let judgement;
+        identity.judgements.forEach((item: any) => {
+            judgement = item[1].toHuman();
+            if(typeof judgement === "object")
+                judgements.push((Array.from(new Map(Object.entries(judgement)).keys())).toString());
+            else
+                judgements.push(judgement);
         });
     }
 
