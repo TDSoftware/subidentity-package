@@ -4,8 +4,11 @@ import { BasicIdentityInfo } from "./types/BasicIdentityInfo";
 import {_paginate, _validatePaginationInput } from "./pagination";
 import { Page } from "./types/Page";
 import { Identity } from "./types/Identity";
+import BigNumber from "bignumber.js";
+import { Balance } from "./types/Balance";
 
 export const apiPromises: { [wsAddress: string]: ApiPromise } = {};
+export const tokenSymbol: { [wsAddress: string]: string } = {};
 
 /**
  * check if chain of provided endpoint implements the identity pallet
@@ -29,9 +32,9 @@ export const implementsIdentityPallet = async (wsAddress: string): Promise<boole
 export const getIdentities = async (wsAddress: string, page: number, limit: number): Promise<Page<Identity>> => {
     if(!_validatePaginationInput(page, limit))
         throw TypeError("Please provide valid page number or limit");
-    const api = _connectToWsProvider(wsAddress);
-    const chain = (await (await api).rpc.system.chain());
-    return _getIdentityEntries((await api), chain.toString(), page, limit);
+    const api = await _connectToWsProvider(wsAddress);
+    const chain = (await api.rpc.system.chain());
+    return _getIdentityEntries(api, chain.toString(), page, limit);
 };
 
 async function _connectToWsProvider(wsAddress: string): Promise<ApiPromise> {
@@ -213,4 +216,74 @@ async function _getIdentityFromFields(
             });
     }
     return identities;
+}
+
+/**
+ * fetch an Identity from a selected substrate based chain and address
+ * @param wsAddress Network end point URL
+ * @param address 
+ * @throws TypeError when the api is unable to find an identity with the input address 
+ * @returns requested Identitity
+ */
+export const getIdentity = async (wsAddress: string, address: string): Promise<Identity> => {
+    const api = await _connectToWsProvider(wsAddress);
+    let identity: any;
+    if (api) {
+        try {
+            identity = await api.derive.accounts.identity(address);
+        } catch(ex) {
+            throw TypeError("Unable to find an identity with the provided address.");
+        }
+    }
+
+    const judgements: string[] = [];
+    if (identity && identity.judgements) {
+        identity.judgements.forEach((judgement: any) => {
+            judgements.push(judgement[1].toHuman());
+        });
+    }
+
+    const { display, email, legal, riot, twitter, web } = identity;
+    const basicInfo: BasicIdentityInfo = { display, address, riot, twitter, web, legal, email };
+    const balance = await _getAccountBalance(api, address, wsAddress);
+    const chain = (await api.rpc.system.chain()).toString();
+    return {chain, basicInfo, judgements, balance};
+};
+
+async function _getAccountBalance(api: ApiPromise, address: string, wsAddress: string): Promise<Balance> {
+    // calculating total balance
+    let balances: any, decimals: any, total = "";
+    if(api) {
+        balances = await api.derive.balances.account(address);
+        if(api.registry){
+            decimals = api.registry.chainDecimals;
+            decimals = new BigNumber(decimals).toNumber();
+        }
+    }
+    if(balances) {
+        const { freeBalance, reservedBalance } = balances;
+        const base = new BigNumber(10).pow(decimals);
+        total = new BigNumber(freeBalance.toHex())
+            .plus(reservedBalance.toHex())
+            .div(base)
+            .toFixed(2);
+    }
+
+    // extracting the token information from the chain
+    let symbol = "";
+    if(tokenSymbol[wsAddress]) {
+        symbol = tokenSymbol[wsAddress];
+    } else {
+        const properties = (await api.rpc.system.properties());
+        if(properties){
+            const { tokenSymbol } = properties.toHuman();
+            if (tokenSymbol && Array.isArray(tokenSymbol) && tokenSymbol.length > 0) {
+                symbol = tokenSymbol.shift() as string;
+            }
+        }
+        tokenSymbol[wsAddress] = symbol;
+    }
+
+    const balance: Balance = { total, symbol };
+    return balance;
 }

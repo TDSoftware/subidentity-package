@@ -1,4 +1,4 @@
-import { apiPromises, getIdentities, implementsIdentityPallet, searchIdentities } from "./identities";
+import { apiPromises, getIdentities, getIdentity, implementsIdentityPallet, searchIdentities } from "./identities";
 
 import { ApiPromiseMock, ApiPromiseMockWOIdentityPallet } from "./mockData";
 
@@ -70,5 +70,12 @@ describe("identities.ts", () => {
     it("should return false for implementing identity pallet", async () => {
         const isImplementingIdentityPallet = await implementsIdentityPallet(testWSAddressWOIdentityPallet);
         expect(isImplementingIdentityPallet).toBeFalsy();
+    });
+
+    it("should fetch requested identity", async () => {
+        const entry = await getIdentity(testWsAddress, "fake-address");
+        expect(entry.chain).toBe("Fake-ChainName");
+        expect(entry.basicInfo.address).toBe("fake-address");
+        //TODO: improvise to test judgements and balance
     });
 });
