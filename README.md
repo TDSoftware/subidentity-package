@@ -34,6 +34,17 @@ let limit = 10;
 let page: Page<Identity> = await getIdentities(wsProvider, pageNumber, limit);
 ```
 
+### getIdentity
+Returns an identity of the chain of the provided wsProvider for the given address.
+
+```
+import { getIdentity } from "@npmjs_tdsoftware/subidentity"
+
+let wsProvider: string = "your-ws-provider"
+let address = "account-address";
+let identity: Identity = await getIdentity(wsProvider, address);
+```
+
 ### searchIdentities
 Returns a Page of identities of the chain of the provided wsProvider fitting the search term.
 
