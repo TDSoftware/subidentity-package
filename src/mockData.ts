@@ -5,7 +5,14 @@ import { ApiPromise } from "@polkadot/api";
 export const ApiPromiseMock = {
     rpc: {
         system: {
-            chain: () => "Fake-ChainName" as unknown
+            chain: () => "Fake-ChainName" as unknown,
+            properties: () => {
+                [{
+                    toHuman(): any {
+                        return ["fake-property"];
+                    }
+                }];
+            }
         }
     },
     query: {
@@ -37,6 +44,24 @@ export const ApiPromiseMock = {
                     });
                 }
             }
+        }
+    },
+    derive: {
+        accounts: {
+            identity(): any {
+                return {
+                    display: "fake-name",
+                    address: "fake-address",
+                    riot: "fake-riot",
+                    twitter: "fake-twitter",
+                    web: "fake-web",
+                    legal: "fake-legal", 
+                    email: "fake-email"                    
+                };
+            }
+        },
+        balances: {
+            account(address: string){ "fake-balance" }
         }
     }
 } as ApiPromise;
