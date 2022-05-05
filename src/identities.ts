@@ -231,6 +231,7 @@ export const getIdentity = async (wsAddress: string, address: string): Promise<I
     if (api) {
         try {
             identity = await api.derive.accounts.identity(address);
+            if(!Object.prototype.hasOwnProperty.call(identity, "display")) throw TypeError;
         } catch(ex) {
             throw TypeError("Unable to find an identity with the provided address.");
         }
