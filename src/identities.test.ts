@@ -82,6 +82,12 @@ describe("identities.ts", () => {
         expect(entry.basicInfo.legal).toBe("fake-legal");
         expect(entry.basicInfo.web).toBe("fake-web");
         expect(entry.basicInfo.email).toBe("fake-email");
-        //TODO: improvise to test judgements and balance
+        expect(entry.judgements).toBeDefined();
+        expect(entry.judgements!.length).toBe(2);
+        expect(entry.judgements![0]).toBe("Reasonable");
+        expect(entry.judgements![1]).toBe("Known Good");
+        expect(entry.balance).toBeDefined();
+        expect(entry.balance!.total).toBe("114.02");
+        expect(entry.balance!.symbol).toBe("KSM");
     });
 });

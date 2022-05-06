@@ -7,20 +7,26 @@ export const ApiPromiseMock = {
         system: {
             chain: () => "Fake-ChainName" as unknown,
             properties: () => {
-                [{
-                    toHuman(): any {
-                        return ["fake-property"];
-                    }
-                }];
+                return new Promise((resolve: (param: unknown) => void) => {
+                    resolve({
+                        toHuman(): any {
+                            return {
+                                tokenDecimals: [12],
+                                tokenSymbol: ["KSM"]
+                            };
+                        }
+                    });
+                });
             }
         }
+    },
+    registry: {
+        chainDecimals: [12]
     },
     query: {
         identity: {
             identityOf: {
-
                 // TODO: separate this, randomize and clean up
-
                 entries() {
                     return new Promise((resolve: (param: unknown[]) => void) => {
                         resolve([[{
@@ -48,20 +54,30 @@ export const ApiPromiseMock = {
     },
     derive: {
         accounts: {
-            identity(): any {
-                return {
-                    display: "fake-name",
-                    address: "fake-address",
-                    riot: "fake-riot",
-                    twitter: "fake-twitter",
-                    web: "fake-web",
-                    legal: "fake-legal", 
-                    email: "fake-email"                    
-                };
+            identity() {
+                return new Promise((resolve: (param: unknown) => void) => {
+                    resolve({
+                        display: "fake-name",
+                        address: "fake-address",
+                        riot: "fake-riot",
+                        twitter: "fake-twitter",
+                        web: "fake-web",
+                        legal: "fake-legal",
+                        email: "fake-email",
+                        judgements: [["0", { toHuman(): string { return "Reasonable" } }], ["1", { toHuman(): string { return "Known Good" } }]]
+                    });
+                });
             }
         },
         balances: {
-            account(address: string){ "fake-balance" }
+            account(address: string) {
+                return new Promise((resolve: (param: unknown) => void) => {
+                    resolve({
+                        freeBalance: { toHex(): number { return 0x0000000000000000000067a20c15be6a } },
+                        reservedBalance: { toHex(): number { return 0x000000000000000000000011d9b07d3c } }
+                    });
+                });
+            }
         }
     }
 } as ApiPromise;
