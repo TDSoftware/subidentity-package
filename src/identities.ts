@@ -6,6 +6,7 @@ import { Page } from "./types/Page";
 import { Identity } from "./types/Identity";
 import BigNumber from "bignumber.js";
 import { Balance } from "./types/Balance";
+import { u8aToString } from "@polkadot/util";
 
 export const apiPromises: { [wsAddress: string]: ApiPromise } = {};
 export const tokenSymbol: { [wsAddress: string]: string } = {};
@@ -75,8 +76,15 @@ async function _getBasicInfoOfIdentities(api: ApiPromise): Promise<BasicIdentity
         if (Array.isArray(addressArray) && addressArray.length > 0) {
             address = `${addressArray[0]}`;
         }
+        let parsedDisplay = "";
+        if (display && /^0x/.test(display)) {
+            const {
+                info: { display }
+            } = identity[1].unwrap();
+            parsedDisplay = u8aToString(display.asRaw.toU8a(true));
+        }
         return {
-            display,
+            display: parsedDisplay || display,
             address,
             riot,
             twitter,
