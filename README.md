@@ -78,5 +78,15 @@ let wsProvider = "your-ws-provider"
 let isMyNodeArchive = await isArchiveNode(wsProvider);
 ```
 
+### getChainName
+Returns the name of the chain of provided wsProvider.
+
+```
+import { getChainName } from "@npmjs_tdsoftware/subidentity"
+
+let wsProvider = "your-ws-provider"
+let chainName = await getChainName(wsProvider);
+```
+
 ## License
 Apache License 2.0

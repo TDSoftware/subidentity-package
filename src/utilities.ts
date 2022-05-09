@@ -28,3 +28,13 @@ export const isArchiveNode = async (wsAddress : string): Promise<boolean> => {
     }
     return true;
 };
+
+/**
+ * fetch chain name from a selected substrate based chain 
+ * @param wsAddress Network end point URL
+ * @returns name of the requested chain
+ */
+ export const getChainName = async (wsAddress : string): Promise<string> => {
+    const api = await _connectToWsProvider(wsAddress);
+    return (await api.rpc.system.chain()).toString();
+};
