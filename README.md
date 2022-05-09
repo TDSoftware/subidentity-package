@@ -68,5 +68,15 @@ let wsProvider = "your-ws-provider"
 let isImplementingIdentityPallet = await implementsIdentityPallet(wsProvider);
 ```
 
+### isArchiveNode
+Returns true, if the chain of provided wsProvider is running on archive mode.
+
+```
+import { isArchiveNode } from "@npmjs_tdsoftware/subidentity"
+
+let wsProvider = "your-ws-provider"
+let isMyNodeArchive = await isArchiveNode(wsProvider);
+```
+
 ## License
 Apache License 2.0

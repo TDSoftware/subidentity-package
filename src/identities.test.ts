@@ -1,4 +1,5 @@
-import { apiPromises, getIdentities, getIdentity, implementsIdentityPallet, searchIdentities } from "./identities";
+import { getIdentities, getIdentity, implementsIdentityPallet, searchIdentities } from "./identities";
+import { apiPromises } from "./utilities";
 
 import { ApiPromiseMock, ApiPromiseMockWOIdentityPallet } from "./mockData";
 

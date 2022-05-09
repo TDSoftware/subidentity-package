@@ -1,4 +1,4 @@
-import { ApiPromise, WsProvider } from "@polkadot/api";
+import { ApiPromise } from "@polkadot/api";
 import "@polkadot/api-augment";
 import { BasicIdentityInfo } from "./types/BasicIdentityInfo";
 import {_paginate, _validatePaginationInput } from "./pagination";
@@ -7,8 +7,8 @@ import { Identity } from "./types/Identity";
 import BigNumber from "bignumber.js";
 import { Balance } from "./types/Balance";
 import { u8aToString } from "@polkadot/util";
+import { _connectToWsProvider } from "./utilities";
 
-export const apiPromises: { [wsAddress: string]: ApiPromise } = {};
 export const tokenSymbol: { [wsAddress: string]: string } = {};
 
 /**
@@ -37,16 +37,6 @@ export const getIdentities = async (wsAddress: string, page: number, limit: numb
     const chain = (await api.rpc.system.chain());
     return _getIdentityEntries(api, chain.toString(), page, limit);
 };
-
-async function _connectToWsProvider(wsAddress: string): Promise<ApiPromise> {
-    if(apiPromises[wsAddress]) {
-        return apiPromises[wsAddress];
-    }
-    const wsProvider = new WsProvider(wsAddress);
-    const apiPromise = await ApiPromise.create({provider: wsProvider});
-    apiPromises[wsAddress] = apiPromise;
-    return apiPromise;
-}
 
 async function _getIdentityEntries(api: ApiPromise, chainName: string, page: number, limit: number): Promise<Page<Identity>> {
     const entries = await _getBasicInfoOfIdentities(api);
