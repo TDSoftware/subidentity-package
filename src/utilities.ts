@@ -36,7 +36,7 @@ export const isArchiveNode = async (wsAddress : string): Promise<boolean> => {
  * @param wsAddress Network end point URL
  * @returns name of the requested chain
  */
- export const getChainName = async (wsAddress : string): Promise<string> => {
+export const getChainName = async (wsAddress : string): Promise<string> => {
     const api = await _connectToWsProvider(wsAddress);
     return (await api.rpc.system.chain()).toString();
 };
