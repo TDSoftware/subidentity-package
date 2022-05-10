@@ -92,6 +92,9 @@ export const ApiPromiseMockWOIdentityPallet = {
     rpc: {
         system: {
             chain: () => "Fake-ChainName" as unknown
+        },
+        chain: {
+            getBlockHash: (blockNumber: number) => "0x00000000000000000000123456789" as unknown
         }
     },
     query: {}
