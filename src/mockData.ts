@@ -18,6 +18,9 @@ export const ApiPromiseMock = {
                     });
                 });
             }
+        },
+        chain: {
+            getBlockHash: (blockNumber: number) => "0x00000000000000000000123456789" as unknown
         }
     },
     registry: {
@@ -79,7 +82,8 @@ export const ApiPromiseMock = {
                 });
             }
         }
-    }
+    },
+    at: (blockHash: string ) => "fake-state-at-history-block" as unknown
 } as ApiPromise;
 
 // This is a mock for the expected ApiPromise response for a chain that does not implement the identity pallet
@@ -88,6 +92,9 @@ export const ApiPromiseMockWOIdentityPallet = {
     rpc: {
         system: {
             chain: () => "Fake-ChainName" as unknown
+        },
+        chain: {
+            getBlockHash: (blockNumber: number) => "0x00000000000000000000123456789" as unknown
         }
     },
     query: {}
