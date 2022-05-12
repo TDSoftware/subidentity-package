@@ -1,4 +1,5 @@
 import { ApiPromise, WsProvider } from "@polkadot/api";
+import { Token } from "./types/Token";
 
 export const apiPromises: { [wsAddress: string]: ApiPromise } = {};
 
@@ -39,4 +40,23 @@ export const isArchiveNode = async (wsAddress : string): Promise<boolean> => {
 export const getChainName = async (wsAddress : string): Promise<string> => {
     const api = await _connectToWsProvider(wsAddress);
     return (await api.rpc.system.chain()).toString();
+};
+
+/**
+ * fetch Token details of a selected substrate based chain 
+ * @param wsAddress Network end point URL
+ * @returns token symbol and decimals of the requested chain
+ */
+export const getTokenDetails = async (wsAddress : string): Promise<Token> => {
+    const api = await _connectToWsProvider(wsAddress);
+    let symbol, decimals;
+    const properties = (await api.rpc.system.properties());
+    if(properties){
+        const { tokenSymbol, tokenDecimals } = properties.toHuman();
+        if (tokenSymbol && Array.isArray(tokenSymbol) && tokenSymbol.length > 0)
+            symbol = tokenSymbol.shift() as string;
+        if (tokenDecimals && Array.isArray(tokenDecimals) && tokenDecimals.length > 0)
+            decimals = Number(tokenDecimals.shift());
+    }
+    return {symbol, decimals};
 };
