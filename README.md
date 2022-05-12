@@ -88,5 +88,15 @@ let wsProvider = "your-ws-provider"
 let chainName = await getChainName(wsProvider);
 ```
 
+### getTokenDetails
+Returns the token symbol and decimals of the chain of provided wsProvider.
+
+```
+import { Token, getTokenDetails } from "@npmjs_tdsoftware/subidentity"
+
+let wsProvider = "your-ws-provider"
+let tokenDetails = await getTokenDetails(wsProvider);
+```
+
 ## License
 Apache License 2.0

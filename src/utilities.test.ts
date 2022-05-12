@@ -1,4 +1,4 @@
-import { apiPromises, isArchiveNode, getChainName } from "./utilities";
+import { apiPromises, isArchiveNode, getChainName, getTokenDetails } from "./utilities";
 import { ApiPromiseMock, ApiPromiseMockWOIdentityPallet } from "./mockData";
 
 const testWsAddress = "//test-address.yeah";
@@ -22,5 +22,11 @@ describe("utilities.ts", () => {
     it("should return the name of the substrate chain", async () => {
         const chainName = await getChainName(testWsAddress);
         expect(chainName).toBe("Fake-ChainName");
+    });
+
+    it("should return the token details of the substrate chain", async () => {
+        const token = await getTokenDetails(testWsAddress);
+        expect(token.symbol).toBe("KSM");
+        expect(token.decimals).toBe(12);
     });
 });
