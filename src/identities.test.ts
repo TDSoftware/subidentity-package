@@ -32,6 +32,9 @@ describe("identities.ts", () => {
         const entries = await getIdentities(testWsAddress, 1, 5);
         expect(entries.next).toBe(undefined);
         expect(entries.previous).toBe(undefined);
+        expect(entries.totalItemsCount).toBe(1);
+        expect(entries.totalPageCount).toBe(1);
+        expect(entries.items.length).toBe(1);
     });
 
     it("should throw TypeError since pagination details are invalid", async () => {

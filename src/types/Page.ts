@@ -1,6 +1,7 @@
 export interface Page<T> {
-    totalPageCount: number | undefined;
-    previous: number | undefined;
-    next: number | undefined;
+    totalItemsCount?: number;  
+    totalPageCount?: number;
+    previous?: number;
+    next?: number;
     items: T[];
 }

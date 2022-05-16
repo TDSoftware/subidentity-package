@@ -10,14 +10,15 @@ export async function _paginate(allItems: any[], page: number, limit: number): P
     const endIndex = page * limit;
     const items: any[] = allItems.slice(startIndex, endIndex);
     const totalPageCount = Math.ceil(allItems.length/limit);
+    const totalItemsCount = allItems.length;
     let previous, next;
     if(startIndex > 0) {
         previous = page - 1;
     }
-    if(endIndex < allItems.length) {
+    if(endIndex < totalItemsCount) {
         next = page + 1;
     }
-    return {totalPageCount, previous, next, items};
+    return {totalItemsCount, totalPageCount, previous, next, items};
 }
 
 export function _validatePaginationInput(page: number, limit: number): boolean {
