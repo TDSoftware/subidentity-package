@@ -22,7 +22,7 @@ export async function _connectToWsProvider(wsAddress: string): Promise<ApiPromis
         return apiPromise;
     }
     catch (error) {
-        //disconnect to prevent conenction retries
+        //disconnect to prevent connection retries
         apiPromise.disconnect();
         throw  new Error("Could not connect to endpoint.");
     }
