@@ -3,6 +3,13 @@ import { Token } from "./types/Token";
 
 export const apiPromises: { [wsAddress: string]: ApiPromise } = {};
 
+
+/**
+ * connect to wsProvider 
+ * @param wsAddress Network endpoint URL
+ * @returns ApiPromise instance using the supplied provider
+ * @throws Error when the initial connection fails
+ */
 export async function _connectToWsProvider(wsAddress: string): Promise<ApiPromise> {
     if(apiPromises[wsAddress]) {
         return apiPromises[wsAddress];
@@ -15,8 +22,9 @@ export async function _connectToWsProvider(wsAddress: string): Promise<ApiPromis
         return apiPromise;
     }
     catch (error) {
+        //disconnect to prevent conenction retries
         apiPromise.disconnect();
-        throw  new Error("Could not connect to Endpoint.");
+        throw  new Error("Could not connect to endpoint.");
     }
 }
 /**
