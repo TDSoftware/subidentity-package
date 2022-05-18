@@ -8,11 +8,17 @@ export async function _connectToWsProvider(wsAddress: string): Promise<ApiPromis
         return apiPromises[wsAddress];
     }
     const wsProvider = new WsProvider(wsAddress);
-    const apiPromise = await ApiPromise.create({provider: wsProvider});
-    apiPromises[wsAddress] = apiPromise;
-    return apiPromise;
+    const apiPromise = new ApiPromise({ provider: wsProvider });
+    try {
+        await apiPromise.isReadyOrError;
+        apiPromises[wsAddress] = apiPromise;
+        return apiPromise;
+    }
+    catch (error) {
+        apiPromise.disconnect();
+        throw  new Error("Could not connect to Endpoint.");
+    }
 }
-
 /**
  * check if the node of provided wsProvider is running on archive mode 
  * @param wsAddress Network end point URL
