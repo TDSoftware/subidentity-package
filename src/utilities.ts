@@ -3,16 +3,30 @@ import { Token } from "./types/Token";
 
 export const apiPromises: { [wsAddress: string]: ApiPromise } = {};
 
+
+/**
+ * connect to wsProvider 
+ * @param wsAddress Network endpoint URL
+ * @returns ApiPromise instance using the supplied provider
+ * @throws Error when the initial connection fails
+ */
 export async function _connectToWsProvider(wsAddress: string): Promise<ApiPromise> {
     if(apiPromises[wsAddress]) {
         return apiPromises[wsAddress];
     }
     const wsProvider = new WsProvider(wsAddress);
-    const apiPromise = await ApiPromise.create({provider: wsProvider});
-    apiPromises[wsAddress] = apiPromise;
-    return apiPromise;
+    const apiPromise = new ApiPromise({ provider: wsProvider });
+    try {
+        await apiPromise.isReadyOrError;
+        apiPromises[wsAddress] = apiPromise;
+        return apiPromise;
+    }
+    catch (error) {
+        //disconnect to prevent connection retries
+        apiPromise.disconnect();
+        throw  new Error("Could not connect to endpoint.");
+    }
 }
-
 /**
  * check if the node of provided wsProvider is running on archive mode 
  * @param wsAddress Network end point URL
