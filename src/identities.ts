@@ -38,6 +38,37 @@ export const getIdentities = async (wsAddress: string, page: number, limit: numb
     return _getIdentityEntries(api, chain.toString(), page, limit);
 };
 
+/**
+ * fetch all identitites from a selected substrate based chain including their account balance and judgements
+ * @param wsAddress Network end point URL
+ */
+export const getCompleteIdentities = async (wsAddress: string): Promise<Identity[]> => {
+    const api = await _connectToWsProvider(wsAddress);
+    const list = await api.query.identity.identityOf.entries();
+    const identities = list.map((identity: any) => {
+        const {
+            display: {Raw: display},
+            email: {Raw: email},
+            legal: {Raw: legal},
+            riot: {Raw: riot},
+            twitter: {Raw: twitter},
+            web: {Raw: web}
+        } = identity[1].toHuman().info;
+        const addressArray = identity[0].toHuman();
+        let address = "";
+        if (Array.isArray(addressArray) && addressArray.length > 0) {
+            address = `${addressArray[0]}`;
+        }
+        //TODO add Judgements and Balance
+        const basicInfo: BasicIdentityInfo = { display, address, riot, twitter, web, legal, email };
+        return {
+            basicInfo
+        };
+    });
+    return identities;
+    //TODO: add unit test cases and edit readme
+};
+
 async function _getIdentityEntries(api: ApiPromise, chainName: string, page: number, limit: number): Promise<Page<Identity>> {
     const entries = await _getBasicInfoOfIdentities(api);
     const identities: Identity[] = [];
