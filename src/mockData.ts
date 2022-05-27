@@ -46,7 +46,11 @@ export const ApiPromiseMock = {
                                         riot: { Raw: "fake-riot" },
                                         twitter: { Raw: "fake-twitter" },
                                         web: { Raw: "fake-web" }
-                                    }
+                                    },
+                                    judgements: [
+                                        ["0", "Reasonable"],
+                                        ["1", "Known Good"]
+                                    ]
                                 };
                             }
                         }]]);
@@ -83,7 +87,7 @@ export const ApiPromiseMock = {
             }
         }
     },
-    at: (blockHash: string ) => "fake-state-at-history-block" as unknown
+    at: (blockHash: string) => "fake-state-at-history-block" as unknown
 } as ApiPromise;
 
 // This is a mock for the expected ApiPromise response for a chain that does not implement the identity pallet

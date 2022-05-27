@@ -1,4 +1,4 @@
-import { getIdentities, getIdentity, implementsIdentityPallet, searchIdentities } from "./identities";
+import { getIdentities, getIdentity, implementsIdentityPallet, searchIdentities, getAccountBalance, getCompleteIdentities } from "./identities";
 import { apiPromises } from "./utilities";
 
 import { ApiPromiseMock, ApiPromiseMockWOIdentityPallet } from "./mockData";
@@ -94,4 +94,48 @@ describe("identities.ts", () => {
         expect(entry.balance!.total).toBe("114.02");
         expect(entry.balance!.symbol).toBe("KSM");
     });
+
+    it("should fetch all identities", async () => {
+        const entry = await getCompleteIdentities(testWsAddress);
+        expect(entry.length).toBe(1);
+        expect(entry[0].chain).toBeUndefined();
+        expect(entry[0].basicInfo.address).toBe("fake-address");
+        expect(entry[0].basicInfo.display).toBe("fake-name");
+        expect(entry[0].basicInfo.riot).toBe("fake-riot");
+        expect(entry[0].basicInfo.twitter).toBe("fake-twitter");
+        expect(entry[0].basicInfo.legal).toBe("fake-legal");
+        expect(entry[0].basicInfo.web).toBe("fake-web");
+        expect(entry[0].basicInfo.email).toBe("fake-email");
+        expect(entry[0].judgements).toBeDefined();
+        expect(entry[0].judgements!.length).toBe(2);
+        expect(entry[0].judgements![0]).toBe("Reasonable");
+        expect(entry[0].judgements![1]).toBe("Known Good");
+        expect(entry[0].balance).toBeUndefined();
+    });
+
+    it("should throw error, since identity pallet is not implemented", async () => {
+        try {
+            await getCompleteIdentities(testWSAddressWOIdentityPallet);
+        } catch (error) {
+            expect(error).toBeInstanceOf(Error);
+            expect(error).toHaveProperty("message", "Can not fetch Identities for a chain that does not implement the identity pallet.");
+        }
+    });
+
+
+    it("should fetch requested balance", async () => {
+        const entry = await getAccountBalance(testWsAddress, "fake-address");
+        expect(entry.total).toBe("114.02");
+        expect(entry.symbol).toBe("KSM");
+    });
+
+    it("should throw TypeError since pagination details are invalid", async () => {
+        try {
+            await getAccountBalance(testWsAddress, "another-fake-address");
+        } catch (error) {
+            expect(error).toBeInstanceOf(TypeError);
+            expect(error).toHaveProperty("message", "Unable to find the balance for the provided address.");
+        }
+    });
+
 });
