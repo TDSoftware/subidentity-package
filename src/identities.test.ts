@@ -129,11 +129,12 @@ describe("identities.ts", () => {
         expect(entry.symbol).toBe("KSM");
     });
 
-    it("should throw TypeError since pagination details are invalid", async () => {
+    it("should throw Error since there is no balance for the account with this address", async () => {
         try {
             await getAccountBalance(testWsAddress, "another-fake-address");
+            expect(true).toBe(false);
         } catch (error) {
-            expect(error).toBeInstanceOf(TypeError);
+            expect(error).toBeInstanceOf(Error);
             expect(error).toHaveProperty("message", "Unable to find the balance for the provided address.");
         }
     });

@@ -267,7 +267,7 @@ async function _getIdentityFromFields(
  * fetch an Identity from a selected substrate based chain and address
  * @param wsAddress Network end point URL
  * @param address 
- * @throws TypeError when the api is unable to find an identity with the input address 
+ * @throws TypeError when an identity with the given address can not be fetched
  * @returns requested Identitity
  */
 export const getIdentity = async (wsAddress: string, address: string): Promise<Identity> => {
@@ -305,7 +305,7 @@ export const getIdentity = async (wsAddress: string, address: string): Promise<I
  * fetch the balance of an account with given address from a given substrate based chain
  * @param wsAddress Network end point URL
  * @param address account address
- * @throws TypeError when the api is unable to find the balance for the given address 
+ * @throws Error when the balance for the given address could not be fetched
  * @returns requested Balance
  */
 export const getAccountBalance = async (wsAddress: string, address: string): Promise<Balance> => {
@@ -317,7 +317,7 @@ export const getAccountBalance = async (wsAddress: string, address: string): Pro
             balances = await api.derive.balances.account(address);
             if (!Object.prototype.hasOwnProperty.call(balances, "freeBalance")) throw TypeError;
         } catch (ex) {
-            throw TypeError("Unable to find the balance for the provided address.");
+            throw Error("Unable to find the balance for the provided address.");
         }
         if (api.registry) {
             decimals = api.registry.chainDecimals;

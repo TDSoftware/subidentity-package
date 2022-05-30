@@ -78,12 +78,14 @@ export const ApiPromiseMock = {
         },
         balances: {
             account(address: string) {
-                return new Promise((resolve: (param: unknown) => void) => {
-                    resolve({
-                        freeBalance: { toHex(): number { return 0x0000000000000000000067a20c15be6a } },
-                        reservedBalance: { toHex(): number { return 0x000000000000000000000011d9b07d3c } }
+                if (address === "fake-address")
+                    return new Promise((resolve: (param: unknown) => void) => {
+                        resolve({
+                            freeBalance: { toHex(): number { return 0x0000000000000000000067a20c15be6a } },
+                            reservedBalance: { toHex(): number { return 0x000000000000000000000011d9b07d3c } }
+                        });
                     });
-                });
+                else return;
             }
         }
     },
