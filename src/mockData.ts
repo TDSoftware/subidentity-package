@@ -46,7 +46,11 @@ export const ApiPromiseMock = {
                                         riot: { Raw: "fake-riot" },
                                         twitter: { Raw: "fake-twitter" },
                                         web: { Raw: "fake-web" }
-                                    }
+                                    },
+                                    judgements: [
+                                        ["0", "Reasonable"],
+                                        ["1", "Known Good"]
+                                    ]
                                 };
                             }
                         }]]);
@@ -74,16 +78,18 @@ export const ApiPromiseMock = {
         },
         balances: {
             account(address: string) {
-                return new Promise((resolve: (param: unknown) => void) => {
-                    resolve({
-                        freeBalance: { toHex(): number { return 0x0000000000000000000067a20c15be6a } },
-                        reservedBalance: { toHex(): number { return 0x000000000000000000000011d9b07d3c } }
+                if (address === "fake-address")
+                    return new Promise((resolve: (param: unknown) => void) => {
+                        resolve({
+                            freeBalance: { toHex(): number { return 0x0000000000000000000067a20c15be6a } },
+                            reservedBalance: { toHex(): number { return 0x000000000000000000000011d9b07d3c } }
+                        });
                     });
-                });
+                else return;
             }
         }
     },
-    at: (blockHash: string ) => "fake-state-at-history-block" as unknown
+    at: (blockHash: string) => "fake-state-at-history-block" as unknown
 } as ApiPromise;
 
 // This is a mock for the expected ApiPromise response for a chain that does not implement the identity pallet
