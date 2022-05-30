@@ -66,6 +66,15 @@ describe("identities.ts", () => {
         expect(entries.items.length).toBe(0);
     });
 
+    it("should throw an exception since the search key has special charaters", async () => {
+        try {
+            await searchIdentities(testWsAddress, "*?", 1, 5);
+        } catch (error) {
+            expect(error).toBeInstanceOf(TypeError);
+            expect(error).toHaveProperty("message", "Your search key may contain special characters. Please try escaping them for search. e.g., /*");
+        }
+    });
+
     it("should return true for implementing identity pallet", async () => {
         const isImplementingIdentityPallet = await implementsIdentityPallet(testWsAddress);
         expect(isImplementingIdentityPallet).toBeTruthy();

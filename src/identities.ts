@@ -184,7 +184,12 @@ async function _getIdentityFromFields(
     field: string
 ): Promise<BasicIdentityInfo[]> {
     const allIdentities = await _getBasicInfoOfIdentities(api);
-    const query = new RegExp(`${field}`, "i");
+    let query: RegExp;
+    try {
+        query = new RegExp(`${field}`, "i");
+    } catch(ex) {
+        throw TypeError("Your search key may contain special characters. Please try escaping them for search. e.g., /*");
+    }
     let identities = allIdentities;
     if (field) {
         identities = allIdentities
