@@ -34,6 +34,27 @@ let limit = 10;
 let page: Page<Identity> = await getIdentities(wsProvider, pageNumber, limit);
 ```
 
+### getCompleteIdentities
+Returns a list of all identitites from a selected substrate based chain including their judgements.
+
+```
+import { Identity, getCompleteIdentities } from "@npmjs_tdsoftware/subidentity"
+
+let wsProvider: string = "your-ws-provider"
+let identities: Identity[] = await getCompleteIdentities(wsProvider);
+```
+
+### getAccountBalance
+Returns the balance of an account with given address from a given substrate based chain.
+
+```
+import { getAccountBalance, Balance } from "@npmjs_tdsoftware/subidentity"
+
+let wsProvider: string = "your-ws-provider"
+let address = "account-address";
+let identity: Balance = await getAccountBalance(wsProvider, address);
+```
+
 ### getIdentity
 Returns an identity of the chain of the provided wsProvider for the given address.
 

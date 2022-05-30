@@ -1,7 +1,7 @@
 import { ApiPromise } from "@polkadot/api";
 import "@polkadot/api-augment";
 import { BasicIdentityInfo } from "./types/BasicIdentityInfo";
-import {_paginate, _validatePaginationInput } from "./pagination";
+import { _paginate, _validatePaginationInput } from "./pagination";
 import { Page } from "./types/Page";
 import { Identity } from "./types/Identity";
 import BigNumber from "bignumber.js";
@@ -31,20 +31,67 @@ export const implementsIdentityPallet = async (wsAddress: string): Promise<boole
  * @returns requested page with identitites
  */
 export const getIdentities = async (wsAddress: string, page: number, limit: number): Promise<Page<Identity>> => {
-    if(!_validatePaginationInput(page, limit))
+    if (!_validatePaginationInput(page, limit))
         throw TypeError("Please provide valid page number or limit");
     const api = await _connectToWsProvider(wsAddress);
     const chain = (await api.rpc.system.chain());
     return _getIdentityEntries(api, chain.toString(), page, limit);
 };
 
+/**
+ * fetch all identitites from a selected substrate based chain including their judgements
+ * @param wsAddress Network end point URL
+ * @throws Error when identity pallet is not implemented on selected substrate chain
+ */
+export const getCompleteIdentities = async (wsAddress: string): Promise<Identity[]> => {
+    const api = await _connectToWsProvider(wsAddress);
+    try {
+        const list = await api.query.identity.identityOf.entries();
+        const identities = list.map((identity: any) => {
+            const {
+                display: { Raw: display },
+                email: { Raw: email },
+                legal: { Raw: legal },
+                riot: { Raw: riot },
+                twitter: { Raw: twitter },
+                web: { Raw: web }
+            } = identity[1].toHuman().info;
+            const addressArray = identity[0].toHuman();
+            let address = "";
+            if (Array.isArray(addressArray) && addressArray.length > 0) {
+                address = `${addressArray[0]}`;
+            }
+            const judgements: string[] = [];
+            if (identity[1].toHuman().judgements) {
+                identity[1].toHuman().judgements.forEach((item: any) => {
+                    if (typeof item[1] === "object")
+                        judgements.push(Object.keys(item[1])[0].toString());
+                    else
+                        judgements.push(item[1]);
+                });
+            }
+            const basicInfo: BasicIdentityInfo = { display, address, riot, twitter, web, legal, email };
+            return {
+                basicInfo,
+                judgements
+            };
+        });
+        return identities;
+    }
+    catch (e) {
+        const message = await implementsIdentityPallet(wsAddress) ? ("Something went wrong while fetching identities: " + e) : "Can not fetch Identities for a chain that does not implement the identity pallet.";
+        throw new Error(message);
+
+    }
+};
+
 async function _getIdentityEntries(api: ApiPromise, chainName: string, page: number, limit: number): Promise<Page<Identity>> {
     const entries = await _getBasicInfoOfIdentities(api);
     const identities: Identity[] = [];
-    entries.forEach(function(value) {
+    entries.forEach(function (value) {
         const basicInfo: BasicIdentityInfo = value;
         const chain = chainName;
-        const identity : Identity = { chain, basicInfo };
+        const identity: Identity = { chain, basicInfo };
         identities.push(identity);
     });
     return _paginate(identities, page, limit);
@@ -54,12 +101,12 @@ async function _getBasicInfoOfIdentities(api: ApiPromise): Promise<BasicIdentity
     const list = await api.query.identity.identityOf.entries();
     return list.map((identity: any) => {
         const {
-            display: {Raw: display},
-            email: {Raw: email},
-            legal: {Raw: legal},
-            riot: {Raw: riot},
-            twitter: {Raw: twitter},
-            web: {Raw: web}
+            display: { Raw: display },
+            email: { Raw: email },
+            legal: { Raw: legal },
+            riot: { Raw: riot },
+            twitter: { Raw: twitter },
+            web: { Raw: web }
         } = identity[1].toHuman().info;
         const addressArray = identity[0].toHuman();
         let address = "";
@@ -95,9 +142,9 @@ async function _getBasicInfoOfIdentities(api: ApiPromise): Promise<BasicIdentity
  * @returns requested page with identitites matching search query
  */
 export const searchIdentities = async (wsAddress: string, query: string, page: number, limit: number): Promise<Page<Identity>> => {
-    if(!_validatePaginationInput(page, limit))
+    if (!_validatePaginationInput(page, limit))
         throw TypeError("Please provide valid page number or limit");
-    if(!query) {
+    if (!query) {
         return getIdentities(wsAddress, page, limit);
     }
     const searchResults: Identity[] = [];
@@ -112,13 +159,13 @@ export const searchIdentities = async (wsAddress: string, query: string, page: n
     if (fromIndex) {
         const basicInfo: BasicIdentityInfo = fromIndex;
         const chain = chainName;
-        const ident : Identity = { chain, basicInfo };
+        const ident: Identity = { chain, basicInfo };
         searchResults.push(ident);
     }
-    fromFields.forEach(function(value) {
+    fromFields.forEach(function (value) {
         const basicInfo: BasicIdentityInfo = value;
         const chain = chainName;
-        const identity : Identity = { chain, basicInfo };
+        const identity: Identity = { chain, basicInfo };
         searchResults.push(identity);
     });
     return _paginate(searchResults, page, limit);
@@ -127,17 +174,17 @@ export const searchIdentities = async (wsAddress: string, query: string, page: n
 async function _getIdentityFromIndex(
     api: ApiPromise,
     index: string
-): Promise<BasicIdentityInfo|undefined> {
+): Promise<BasicIdentityInfo | undefined> {
     try {
         const numberRegex = new RegExp("^[0-9]+$");
-        if(!numberRegex.test(index)) return;
+        if (!numberRegex.test(index)) return;
         const accountData = await api.query.indices.accounts(index);
         const account = accountData.toHuman();
         if (Array.isArray(account)) {
             const address = account[0]?.toString();
             const identity = await api.derive.accounts.identity(address);
             //check if Account has an identity
-            if(!Object.prototype.hasOwnProperty.call(identity, "display")) return;
+            if (!Object.prototype.hasOwnProperty.call(identity, "display")) return;
             return {
                 ...identity,
                 address
@@ -153,7 +200,12 @@ async function _getIdentityFromFields(
     field: string
 ): Promise<BasicIdentityInfo[]> {
     const allIdentities = await _getBasicInfoOfIdentities(api);
-    const query = new RegExp(`${field}`, "i");
+    let query: RegExp;
+    try {
+        query = new RegExp(`${field}`, "i");
+    } catch(ex) {
+        throw TypeError("Your search key may contain special characters. Please try escaping them for search. e.g., /*");
+    }
     let identities = allIdentities;
     if (field) {
         identities = allIdentities
@@ -220,7 +272,7 @@ async function _getIdentityFromFields(
  * fetch an Identity from a selected substrate based chain and address
  * @param wsAddress Network end point URL
  * @param address 
- * @throws TypeError when the api is unable to find an identity with the input address 
+ * @throws TypeError when an identity with the given address can not be fetched
  * @returns requested Identitity
  */
 export const getIdentity = async (wsAddress: string, address: string): Promise<Identity> => {
@@ -229,8 +281,8 @@ export const getIdentity = async (wsAddress: string, address: string): Promise<I
     if (api) {
         try {
             identity = await api.derive.accounts.identity(address);
-            if(!Object.prototype.hasOwnProperty.call(identity, "display")) throw TypeError;
-        } catch(ex) {
+            if (!Object.prototype.hasOwnProperty.call(identity, "display")) throw TypeError;
+        } catch (ex) {
             throw TypeError("Unable to find an identity with the provided address.");
         }
     }
@@ -241,31 +293,43 @@ export const getIdentity = async (wsAddress: string, address: string): Promise<I
         let judgement;
         identity.judgements.forEach((item: any) => {
             judgement = item[1].toHuman();
-            if(typeof judgement === "object")
-                judgements.push((Array.from(new Map(Object.entries(judgement)).keys())).toString());
+            if (typeof judgement === "object")
+                judgements.push(Object.keys(judgement)[0]).toString();
             else
                 judgements.push(judgement);
         });
     }
-
     const { display, email, legal, riot, twitter, web } = identity;
     const basicInfo: BasicIdentityInfo = { display, address, riot, twitter, web, legal, email };
-    const balance = await _getAccountBalance(api, address, wsAddress);
+    const balance = await getAccountBalance(wsAddress, address);
     const chain = (await api.rpc.system.chain()).toString();
-    return {chain, basicInfo, judgements, balance};
+    return { chain, basicInfo, judgements, balance };
 };
 
-async function _getAccountBalance(api: ApiPromise, address: string, wsAddress: string): Promise<Balance> {
+/**
+ * fetch the balance of an account with given address from a given substrate based chain
+ * @param wsAddress Network end point URL
+ * @param address account address
+ * @throws Error when the balance for the given address could not be fetched
+ * @returns requested Balance
+ */
+export const getAccountBalance = async (wsAddress: string, address: string): Promise<Balance> => {
     // calculating total balance
+    const api = await _connectToWsProvider(wsAddress);
     let balances: any, decimals: any, total = "";
-    if(api) {
-        balances = await api.derive.balances.account(address);
-        if(api.registry){
+    if (api) {
+        try {
+            balances = await api.derive.balances.account(address);
+            if (!Object.prototype.hasOwnProperty.call(balances, "freeBalance")) throw TypeError;
+        } catch (ex) {
+            throw Error("Unable to find the balance for the provided address.");
+        }
+        if (api.registry) {
             decimals = api.registry.chainDecimals;
             decimals = new BigNumber(decimals).toNumber();
         }
     }
-    if(balances) {
+    if (balances) {
         const { freeBalance, reservedBalance } = balances;
         const base = new BigNumber(10).pow(decimals);
         total = new BigNumber(freeBalance.toHex())
@@ -276,11 +340,11 @@ async function _getAccountBalance(api: ApiPromise, address: string, wsAddress: s
 
     // extracting the token information from the chain
     let symbol = "";
-    if(tokenSymbol[wsAddress]) {
+    if (tokenSymbol[wsAddress]) {
         symbol = tokenSymbol[wsAddress];
     } else {
         const properties = (await api.rpc.system.properties());
-        if(properties){
+        if (properties) {
             const { tokenSymbol } = properties.toHuman();
             if (tokenSymbol && Array.isArray(tokenSymbol) && tokenSymbol.length > 0) {
                 symbol = tokenSymbol.shift() as string;
@@ -291,4 +355,4 @@ async function _getAccountBalance(api: ApiPromise, address: string, wsAddress: s
 
     const balance: Balance = { total, symbol };
     return balance;
-}
+};
