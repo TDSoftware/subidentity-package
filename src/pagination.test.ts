@@ -8,7 +8,7 @@ describe("pagination.ts", () => {
         const items = [1, 2, 3, 4, 5, 6, 7];
         const pageNumber = 1;
         const limit = 3;
-        const page = await _paginate(items, pageNumber, limit)
+        const page = await _paginate(items, pageNumber, limit);
         expect(page.totalItemsCount).toBe(7);
         expect(page.previous).toBe(undefined);
         expect(page.next).toBe(2);
@@ -20,7 +20,7 @@ describe("pagination.ts", () => {
         const items = [1, 2, 3, 4, 5, 6, 7];
         const pageNumber = 2;
         const limit = 3;
-        const page = await _paginate(items, pageNumber, limit)
+        const page = await _paginate(items, pageNumber, limit);
         expect(page.totalItemsCount).toBe(7);
         expect(page.previous).toBe(1);
         expect(page.next).toBe(3);
@@ -32,7 +32,7 @@ describe("pagination.ts", () => {
         const items = [1, 2, 3, 4, 5, 6, 7];
         const pageNumber = 3;
         const limit = 3;
-        const page = await _paginate(items, pageNumber, limit)
+        const page = await _paginate(items, pageNumber, limit);
         expect(page.totalItemsCount).toBe(7);
         expect(page.previous).toBe(2);
         expect(page.next).toBe(undefined);
@@ -50,7 +50,7 @@ describe("pagination.ts", () => {
     });
 
     it("Validation of pagination should be true, as pagination details are valid", async () => {
-        let isValid = _validatePaginationInput(1, 5);
+        const isValid = _validatePaginationInput(1, 5);
         expect(isValid).toBeTruthy();
     });
 });
