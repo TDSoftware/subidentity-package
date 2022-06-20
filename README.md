@@ -124,6 +124,7 @@ Returns ApiPromise instance using the supplied wsProvider.
 
 ```
 import { ApiPromise } from "@polkadot/api";
+import { connectToWsProvider } from "@npmjs_tdsoftware/subidentity"
 
 let wsProvider = "your-ws-provider"
 let apiPromise: ApiPromise = await connectToWsProvider(wsProvider);
