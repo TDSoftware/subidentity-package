@@ -119,5 +119,15 @@ let wsProvider = "your-ws-provider"
 let tokenDetails = await getTokenDetails(wsProvider);
 ```
 
+### connectToWsProvider
+Returns ApiPromise instance using the supplied wsProvider.
+
+```
+import { ApiPromise } from "@polkadot/api";
+
+let wsProvider = "your-ws-provider"
+let apiPromise: ApiPromise = await connectToWsProvider(wsProvider);
+```
+
 ## License
 Apache License 2.0
