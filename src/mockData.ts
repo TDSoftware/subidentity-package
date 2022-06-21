@@ -89,6 +89,7 @@ export const ApiPromiseMock = {
             }
         }
     },
+    isConnected: true,
     at: (blockHash: string) => "fake-state-at-history-block" as unknown
 } as ApiPromise;
 
@@ -103,5 +104,6 @@ export const ApiPromiseMockWOIdentityPallet = {
             getBlockHash: (blockNumber: number) => "0x00000000000000000000123456789" as unknown
         }
     },
-    query: {}
+    query: {},
+    isConnected: true
 } as ApiPromise;
