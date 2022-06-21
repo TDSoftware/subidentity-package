@@ -38,6 +38,8 @@ describe("identities.ts", () => {
     });
 
     it("should throw TypeError since pagination details are invalid", async () => {
+        //to make sure, that the error was thrown
+        expect.assertions(2);
         try {
             await getIdentities(testWsAddress, -1, -5);
         } catch (error) {
@@ -67,6 +69,8 @@ describe("identities.ts", () => {
     });
 
     it("should throw an exception since the search key has special charaters", async () => {
+        //to make sure, that the error was thrown
+        expect.assertions(2);
         try {
             await searchIdentities(testWsAddress, "*?", 1, 5);
         } catch (error) {
@@ -123,6 +127,8 @@ describe("identities.ts", () => {
     });
 
     it("should throw error, since identity pallet is not implemented", async () => {
+        //to make sure, that the error was thrown
+        expect.assertions(2);
         try {
             await getCompleteIdentities(testWSAddressWOIdentityPallet);
         } catch (error) {
@@ -139,9 +145,10 @@ describe("identities.ts", () => {
     });
 
     it("should throw Error since there is no balance for the account with this address", async () => {
+        //to make sure, that the error was thrown
+        expect.assertions(2);
         try {
             await getAccountBalance(testWsAddress, "another-fake-address");
-            expect(true).toBe(false);
         } catch (error) {
             expect(error).toBeInstanceOf(Error);
             expect(error).toHaveProperty("message", "Unable to find the balance for the provided address.");

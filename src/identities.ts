@@ -7,7 +7,7 @@ import { Identity } from "./types/Identity";
 import BigNumber from "bignumber.js";
 import { Balance } from "./types/Balance";
 import { u8aToString } from "@polkadot/util";
-import { _connectToWsProvider } from "./utilities";
+import { connectToWsProvider } from "./utilities";
 
 export const tokenSymbol: { [wsAddress: string]: string } = {};
 
@@ -17,7 +17,7 @@ export const tokenSymbol: { [wsAddress: string]: string } = {};
  * @returns true if identity pallet is implemented
  */
 export const implementsIdentityPallet = async (wsAddress: string): Promise<boolean> => {
-    const api = await _connectToWsProvider(wsAddress);
+    const api = await connectToWsProvider(wsAddress);
     return typeof api.query.identity !== "undefined";
 };
 
@@ -33,7 +33,7 @@ export const implementsIdentityPallet = async (wsAddress: string): Promise<boole
 export const getIdentities = async (wsAddress: string, page: number, limit: number): Promise<Page<Identity>> => {
     if (!_validatePaginationInput(page, limit))
         throw TypeError("Please provide valid page number or limit");
-    const api = await _connectToWsProvider(wsAddress);
+    const api = await connectToWsProvider(wsAddress);
     const chain = (await api.rpc.system.chain());
     return _getIdentityEntries(api, chain.toString(), page, limit);
 };
@@ -44,7 +44,7 @@ export const getIdentities = async (wsAddress: string, page: number, limit: numb
  * @throws Error when identity pallet is not implemented on selected substrate chain
  */
 export const getCompleteIdentities = async (wsAddress: string): Promise<Identity[]> => {
-    const api = await _connectToWsProvider(wsAddress);
+    const api = await connectToWsProvider(wsAddress);
     try {
         const list = await api.query.identity.identityOf.entries();
         const identities = list.map((identity: any) => {
@@ -148,7 +148,7 @@ export const searchIdentities = async (wsAddress: string, query: string, page: n
         return getIdentities(wsAddress, page, limit);
     }
     const searchResults: Identity[] = [];
-    const api = await _connectToWsProvider(wsAddress);
+    const api = await connectToWsProvider(wsAddress);
     const chainName = ((await api.rpc.system.chain())).toString();
     query = query.trim();
 
@@ -203,7 +203,7 @@ async function _getIdentityFromFields(
     let query: RegExp;
     try {
         query = new RegExp(`${field}`, "i");
-    } catch(ex) {
+    } catch (ex) {
         throw TypeError("Your search key may contain special characters. Please try escaping them for search. e.g., /*");
     }
     let identities = allIdentities;
@@ -276,7 +276,7 @@ async function _getIdentityFromFields(
  * @returns requested Identitity
  */
 export const getIdentity = async (wsAddress: string, address: string): Promise<Identity> => {
-    const api = await _connectToWsProvider(wsAddress);
+    const api = await connectToWsProvider(wsAddress);
     let identity: any;
     if (api) {
         try {
@@ -315,7 +315,7 @@ export const getIdentity = async (wsAddress: string, address: string): Promise<I
  */
 export const getAccountBalance = async (wsAddress: string, address: string): Promise<Balance> => {
     // calculating total balance
-    const api = await _connectToWsProvider(wsAddress);
+    const api = await connectToWsProvider(wsAddress);
     let balances: any, decimals: any, total = "";
     if (api) {
         try {
