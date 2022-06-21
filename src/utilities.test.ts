@@ -36,9 +36,10 @@ describe("utilities.ts", () => {
     });
 
     it("should throw Error since address is not correct or mocked", async () => {
+        //to make sure, that the error was thrown
+        expect.assertions(2);
         try {
             await connectToWsProvider("another-fake-address");
-            expect(true).toBe(false);
         } catch (error) {
             expect(error).toBeInstanceOf(Error);
             expect(error).toHaveProperty("message", "Endpoint should start with 'ws://', received 'another-fake-address'");
