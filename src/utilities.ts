@@ -12,7 +12,11 @@ export const apiPromises: { [wsAddress: string]: ApiPromise } = {};
  */
 export async function connectToWsProvider(wsAddress: string): Promise<ApiPromise> {
     if (apiPromises[wsAddress]) {
-        return apiPromises[wsAddress];
+        if (await apiPromises[wsAddress].isConnected) return apiPromises[wsAddress];
+        else {
+            apiPromises[wsAddress].disconnect();
+            delete apiPromises[wsAddress];
+        }
     }
     const wsProvider = new WsProvider(wsAddress);
     const apiPromise = new ApiPromise({ provider: wsProvider });
