@@ -10,6 +10,6 @@ export interface Identity {
 }
 
 export interface DetailedIdentity extends Identity {
-    treasury: AccountActivity[];
-    governance: AccountActivity[];
+    treasury?: AccountActivity[];
+    governance?: AccountActivity[];
 }
