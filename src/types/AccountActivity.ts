@@ -7,15 +7,42 @@ export enum AccountActivityTypeEnum {
     Treasury = "TREASURY" //activities around the treasury
 }
 
+//On-chain object that a user can interact with
+export enum ActivityObject {
+    Referenda = "referenda",
+    CouncilMotion = "council motion",
+    DemocracyProposal = "democracy proposal",
+    Bounty = "bounty",
+    TreasurySpend = "treasury spend",
+    TreasuryTip = "treasury tip",
+}
 
+//Interaction a user can have with an ActivityObject
+export enum Activity {
+    Proposed = "proposed",
+    VotedAye = "voted aye",
+    VotedNay = "voted nay",
+    MissedVote = "did not vote",
+    Tipped = "tipped"
+
+}
+
+//Types of additional info given for an ActivtiyObject
+export enum InfoType {
+    Reason = "reason",
+    Description = "description"
+}
+
+//Interface for an accounts activity e.g. with the treasury or related to governance
 export interface AccountActivity {
-    primaryObject: string;
+    primaryObject: ActivityObject;
     primaryObjectNumber: number;
-    secondaryObject: string
-    secondaryObjectNumber: number;
-    additionalInfoType: string;
-    additionalInfoValue: string
-    activity: string;
+    secondaryObject: ActivityObject;
+    secondaryObjectNumber: number; //index of object on chain, if available
+    additionalInfoType: InfoType;
+    additionalInfoValue: string;
+    activity: Activity;
     block: number;
     type: AccountActivityTypeEnum;
 }
+

@@ -5,7 +5,8 @@ import { AccountActivity, AccountActivityTypeEnum } from "./types/AccountActivit
 import { Page } from "./types/Page";
 import { Balance } from "./types/Balance";
 import { Token } from "./types/Token";
-import { isArchiveNode, getChainName, getTokenDetails, connectToWsProvider } from "./utilities";
+import { isArchiveNode, getChainName, getTokenDetails, connectToWsProvider, getChainStatus } from "./utilities";
+import { ChainStatus } from "./types/ChainStatus";
 
 export {
     getIdentities,
@@ -16,6 +17,7 @@ export {
     isArchiveNode,
     getChainName,
     getTokenDetails,
+    getChainStatus,
     connectToWsProvider,
     BasicIdentityInfo,
     Identity,
@@ -24,5 +26,6 @@ export {
     Token,
     DetailedIdentity,
     AccountActivity,
-    AccountActivityTypeEnum
+    AccountActivityTypeEnum,
+    ChainStatus
 };

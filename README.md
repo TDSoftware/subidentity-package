@@ -119,6 +119,15 @@ let wsProvider = "your-ws-provider"
 let tokenDetails = await getTokenDetails(wsProvider);
 ```
 
+### getChainStatus
+Returns the chain status of the chain of provided wsProvider.
+```
+import { ChainStatus, getChainStatus } from "@npmjs_tdsoftware/subidentity"
+
+let wsProvider = "your-ws-provider"
+let chainStatus: ChainStatus = await getChainStatus(wsProvider);
+```
+
 ### connectToWsProvider
 Returns ApiPromise instance using the supplied wsProvider.
 
