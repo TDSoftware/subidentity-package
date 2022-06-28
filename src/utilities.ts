@@ -81,6 +81,7 @@ export const getTokenDetails = async (wsAddress: string): Promise<Token> => {
     return { symbol, decimals };
 };
 
+//TODO add unit test for getChainStatus
 /**
  * fetch chain status from a selected substrate based chain 
  * @param wsAddress Network end point URL
@@ -88,7 +89,7 @@ export const getTokenDetails = async (wsAddress: string): Promise<Token> => {
  */
 export const getChainStatus = async (wsAddress: string): Promise<ChainStatus> => {
     const api = await connectToWsProvider(wsAddress);
-    let token = await getTokenDetails(wsAddress);
+    const token = await getTokenDetails(wsAddress);
     return {
         implementsIdentityPallet: await implementsIdentityPallet(wsAddress),
         chainName: await getChainName(wsAddress),
