@@ -1,4 +1,6 @@
 import { ApiPromise, WsProvider } from "@polkadot/api";
+import { implementsIdentityPallet } from "./identities";
+import { ChainStatus } from "./types/ChainStatus";
 import { Token } from "./types/Token";
 
 export const apiPromises: { [wsAddress: string]: ApiPromise } = {};
@@ -79,3 +81,19 @@ export const getTokenDetails = async (wsAddress: string): Promise<Token> => {
     return { symbol, decimals };
 };
 
+//TODO add unit test for getChainStatus
+/**
+ * fetch chain status from a selected substrate based chain 
+ * @param wsAddress Network end point URL
+ * @returns chainStatus of the requested chain
+ */
+export const getChainStatus = async (wsAddress: string): Promise<ChainStatus> => {
+    const api = await connectToWsProvider(wsAddress);
+    const token = await getTokenDetails(wsAddress);
+    return {
+        implementsIdentityPallet: await implementsIdentityPallet(wsAddress),
+        chainName: await getChainName(wsAddress),
+        tokenDecimals: token.decimals,
+        tokenSymbol: token.symbol
+    };
+};
