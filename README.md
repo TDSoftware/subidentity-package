@@ -119,5 +119,25 @@ let wsProvider = "your-ws-provider"
 let tokenDetails = await getTokenDetails(wsProvider);
 ```
 
+### getChainStatus
+Returns the chain status of the chain of provided wsProvider.
+```
+import { ChainStatus, getChainStatus } from "@npmjs_tdsoftware/subidentity"
+
+let wsProvider = "your-ws-provider"
+let chainStatus: ChainStatus = await getChainStatus(wsProvider);
+```
+
+### connectToWsProvider
+Returns ApiPromise instance using the supplied wsProvider.
+
+```
+import { ApiPromise } from "@polkadot/api";
+import { connectToWsProvider } from "@npmjs_tdsoftware/subidentity"
+
+let wsProvider = "your-ws-provider"
+let apiPromise: ApiPromise = await connectToWsProvider(wsProvider);
+```
+
 ## License
 Apache License 2.0
