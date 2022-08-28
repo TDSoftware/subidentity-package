@@ -36,9 +36,9 @@ export enum InfoType {
 //Interface for an accounts activity e.g. with the treasury or related to governance
 export interface AccountActivity {
     primaryObject: ActivityObject;
-    primaryObjectNumber: number;
-    secondaryObject: ActivityObject;
-    secondaryObjectNumber: number; //index of object on chain, if available
+    primaryObjectValue: number | string;
+    secondaryObject?: ActivityObject;
+    secondaryObjectValue?: number | string; //index of object on chain, if available
     additionalInfoType: InfoType;
     additionalInfoValue: string;
     activity: Activity;
